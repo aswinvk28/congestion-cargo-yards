@@ -56,13 +56,19 @@ Serving 'frozen_inference_graph.pb' at http://0.0.0.0:8080
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/automated-queue.png" -d CPU -bt 1 --batch_size 1 -pt 0.11
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/automated-queue.png" -d CPU -bt 1 --batch_size 1 -pt 0.11 --relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1
 
 ```
 
 ![../images/automated-queue.0.png](../images/automated-queue.0.png)
 
+```bash
 
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-yolov3-1020/FP32/person-vehicle-bike-detection-crossroad-yolov3-1020.xml -vds "/home/project/images/automated-queue.png" -d CPU -bt 1 --batch_size 1 -pt 0.11 --prob_threshold 0.05 --iou_threshold 1.0 --yolo 1 --dict_export 1
+
+```
+
+![../images/automated-queue.0.yolo.png](../images/automated-queue.0.yolo.png)
 
 ## Convert TF Model to OpenVINO
 

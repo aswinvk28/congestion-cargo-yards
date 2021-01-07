@@ -77,9 +77,14 @@ def build_argparser():
     parser.add_argument("-asp", "--aspect", help="", type=bool, default=False)
     parser.add_argument("-it", "--is_threshold", help="", type=bool, default=False)
     parser.add_argument("-gs", "--grayscale", help="", type=bool, default=False)
-    args.add_argument("-iout", "--iou_threshold", help="Optional. Intersection over union threshold for overlapping "
+    parser.add_argument("--dict_export", help="", type=bool, default=False)
+    parser.add_argument("--keep_aspect_ratio", help="", type=bool, default=True)
+    parser.add_argument("--yolo", help="", type=bool, default=False)
+    parser.add_argument("-iout", "--iou_threshold", help="Optional. Intersection over union threshold for overlapping "
             "detections filtering", default=0.4, type=float)
-    args.add_argument("-t", "--prob_threshold", help="Optional. Probability threshold for detections filtering",
+    parser.add_argument("--relative_overlap_area", help="Optional. IoU relative overlap area", default=0.4, type=float)
+    parser.add_argument("--relative_union_area", help="Optional. IoU relative union area", default=0.4, type=float)
+    parser.add_argument("-t", "--prob_threshold", help="Optional. Probability threshold for detections filtering",
             default=0.5, type=float)
     
     return parser
@@ -99,29 +104,51 @@ def calculate_threshold(frame, result, args, width, height):
     r = (result.flatten() > args.threshold).astype(bool)
     return np.sum(r)
 
+def finalize_draw_boxes(boxes, frame, args):
+    iou = []
+    for ii, box_1 in enumerate(boxes):
+        for box_2 in boxes[ii+1:]:
+            _ratio, _num, _denom = intersection_over_union(
+                dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_1)), 
+                dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_2)))
+            iou.append([_ratio, _num, _denom])
+    iou = np.array(iou)
+    iou[:,1] /= iou[:,1].max()
+    iou[:,2] /= iou[:,2].max()
+    idx = np.where((iou[:,0] >= args.iou_threshold) & (iou[:,1] <= args.relative_overlap_area) \
+        & (iou[:,2] <= args.relative_union_area))[0]
+    idx = np.floor(1 + np.sqrt(1+idx*2*4)) / 2
+    idx = np.unique(idx).astype(np.int32)
+    print(idx)
+    boxes = np.array(boxes)
+    for box in boxes[idx]:
+        xmin, ymin, xmax, ymax = box
+        cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), args.c, args.th)
+
+    return frame
+
 def draw_boxes(frame, result, args, width, height):
     confs = []
-    result = result.reshape(1, 425, 13, 13)
-    for i in range(13):
-        for j in range(13):
-            boxes = result[0,:,i,j]: # Output shape is 1x1x100x7
-            boxes = boxes.reshape(-1,85)
-            for box in boxes:
-                conf = box[4]
-                if conf >= args.pt:
-                    xmin = int(box[0] * width)
-                    ymin = int(box[1] * height)
-                    xmax = int(box[0] * width + box[3] * width)
-                    ymax = int(box[1] * height + box[2] * width)
-                    confs.append(conf)
-                    cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), args.c, args.th)
+    boxes = []
+    for box in result[0][0]:
+        conf = box[2]
+        if conf >= args.pt:
+            xmin = int(box[3] * width)
+            ymin = int(box[4] * height)
+            xmax = int(box[5] * width)
+            ymax = int(box[6] * height)
+            confs.append(conf)
+            boxes.append((xmin, ymin, xmax, ymax))
             
-    return frame, confs
+    return frame, confs, boxes
 
 def infer_on_batch_result(infer_network, frames, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
     ### TODO: Get the results of the inference request ###
-    results = infer_network.extract_output(request_id=request_id)
+    if args.dict_export:
+        results = infer_network.extract_outputs_dict(request_id=request_id)
+    else:
+        results = infer_network.extract_output(request_id=request_id)
     output_shape = 200
     thrs = []
     confidences = []
@@ -134,8 +161,12 @@ conf=False, threshold=False, aspect=False):
         if threshold:
             thr = calculate_threshold(frame, results[ii,:,:,:], args, width, height)
             thrs.append(thr)
+        elif args.yolo:
+            frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
+            infer_network.get_input_shape()[1], infer_network.get_input_shape()[0], frame, args)
         else:
-            frame, confs = draw_boxes(frame, results[ii,:,:,:], args, width, height)
+            frame, confs, boxes = draw_boxes(frame, results[ii,:,:,:], args, width, height)
+            frame = finalize_draw_boxes(boxes, frame, args)
         frames[ii] = frame
         confidences = np.append(confidences, confs).tolist()
     
@@ -146,7 +177,10 @@ conf=False, threshold=False, aspect=False):
 def infer_on_multi_result(infer_network, frames, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
     ### TODO: Get the results of the inference request ###
-    results = infer_network.extract_output(request_id=request_id)
+    if args.dict_export:
+        results = infer_network.extract_outputs_dict(request_id=request_id)
+    else:
+        results = infer_network.extract_output(request_id=request_id)
     output_shape = 200
     thrs = []
     confidences = []
@@ -160,9 +194,13 @@ conf=False, threshold=False, aspect=False):
             thr = calculate_threshold(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
             args, width, height)
             thrs.append(thr)
+        elif args.yolo:
+            frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
+            infer_network.get_input_shape()[1], infer_network.get_input_shape()[0], frame, args)
         else:
-            frame, confs = draw_boxes(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
+            frame, confs, boxes = draw_boxes(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
         args, width, height)
+            frame = finalize_draw_boxes(boxes, frame, args)
         frames[ii] = frame
         confidences = np.append(confidences, confs).tolist()
     
@@ -173,7 +211,10 @@ conf=False, threshold=False, aspect=False):
 def infer_on_result(infer_network, frame, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
     ### TODO: Get the results of the inference request ###
-    results = infer_network.extract_output(request_id=request_id)
+    if args.dict_export:
+        results = infer_network.extract_outputs_dict(request_id=request_id)
+    else:
+        results = infer_network.extract_output(request_id=request_id)
     output_shape = 200
     thrs = []
     confidences = []
@@ -186,8 +227,12 @@ conf=False, threshold=False, aspect=False):
         thr = calculate_threshold(frame, results[:,:,:,:], 
         args, width, height)
         thrs.append(thr)
+    elif args.yolo:
+        frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
+        infer_network.get_input_shape()[3], infer_network.get_input_shape()[2], frame, args)
     else:
-        frame, confs = draw_boxes(frame, results, args, width, height)
+        frame, confs, boxes = draw_boxes(frame, results, args, width, height)
+        frame = finalize_draw_boxes(boxes, frame, args)
         confidences = np.append(confidences, confs).tolist()
     
     return frame, thrs, confidences

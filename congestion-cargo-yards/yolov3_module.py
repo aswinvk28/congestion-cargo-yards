@@ -1,3 +1,6 @@
+import numpy as np
+import cv2
+
 class YoloParams:
     # ------------------------------------------- Extracting layer parameters ------------------------------------------
     # Magic numbers are copied from yolo samples
@@ -63,8 +66,8 @@ def parse_yolo_region(predictions, resized_image_shape, original_im_shape, param
         y = (row + y) / params.side
         # Value for exp is very big number in some cases so following construction is using here
         try:
-            width = exp(width)
-            height = exp(height)
+            width = np.exp(width)
+            height = np.exp(height)
         except OverflowError:
             continue
         # Depends on topology we need to normalize sizes by feature maps (up to YOLOv3) or by input shape (YOLOv3)
@@ -115,7 +118,7 @@ def intersection_over_union(box_1, box_2):
     area_of_union = box_1_area + box_2_area - area_of_overlap
     if area_of_union == 0:
         return 0
-    return area_of_overlap / area_of_union
+    return area_of_overlap / area_of_union, area_of_overlap, area_of_union
 
 """
 https://github.com/nscalo/OpenVINO-YOLOV4/blob/master/object_detection_demo_yolov3_async.py
@@ -125,6 +128,7 @@ def draw_yolo_bounding_boxes(outputs, net, input_width, input_height, frame, arg
                             args.keep_aspect_ratio)
     objects = filter_objects(objects, args.iou_threshold, args.prob_threshold)
     origin_im_size = frame.shape[:-1]
+    confs = []
     for obj in objects:
         # Validation bbox of detected object
         obj['xmax'] = min(obj['xmax'], origin_im_size[1])
@@ -137,7 +141,10 @@ def draw_yolo_bounding_boxes(outputs, net, input_width, input_height, frame, arg
         # det_label = labels_map[obj['class_id']] if labels_map and len(labels_map) >= obj['class_id'] else \
         #     str(obj['class_id'])
 
+        confs.append(obj['confidence'])
         cv2.rectangle(frame, (obj['xmin'], obj['ymin']), (obj['xmax'], obj['ymax']), color, 2)
         # cv2.putText(frame,
         #             "#" + det_label + ' ' + str(round(obj['confidence'] * 100, 1)) + ' %',
         #             (obj['xmin'], obj['ymin'] - 7), cv2.FONT_HERSHEY_COMPLEX, 0.6, color, 1)
+
+    return frame, confs
