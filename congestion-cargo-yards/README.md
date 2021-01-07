@@ -55,7 +55,7 @@ Serving 'frozen_inference_graph.pb' at http://0.0.0.0:8080
 ## Detect Vehicles from OpenVINO Model
 
 ```bash
-git checkout 072f2ad033b30c03ae846202fa55457aa426a9c9 -b test_branch
+git checkout a94aa5dfb184d83523a74caee54f478a66a2e487 -b test_branch
 ```
 
 ```bash
