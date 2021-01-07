@@ -62,6 +62,7 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ![../images/automated-queue.0.png](../images/automated-queue.0.png)
 
+<!--
 ```bash
 
 root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-yolov3-1020/FP32/person-vehicle-bike-detection-crossroad-yolov3-1020.xml -vds "/home/project/images/automated-queue.png" -d CPU -bt 1 --batch_size 1 -pt 0.11 --prob_threshold 0.05 --iou_threshold 1.0 --yolo 1 --dict_export 1
@@ -70,5 +71,6 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ![../images/automated-queue.0.yolo.png](../images/automated-queue.0.yolo.png)
 
+-->
 ## Convert TF Model to OpenVINO
 
