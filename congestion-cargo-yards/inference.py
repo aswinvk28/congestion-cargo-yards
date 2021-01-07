@@ -126,4 +126,4 @@ class Network:
         '''
         Returns a list of the results for the output layer of the network.
         '''
-        return self.exec_network.requests[request_id].outputs
+        return self.exec_network.requests[request_id].output_blobs
