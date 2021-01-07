@@ -84,6 +84,7 @@ def build_argparser():
             "detections filtering", default=0.4, type=float)
     parser.add_argument("--relative_overlap_area", help="Optional. IoU relative overlap area", default=0.4, type=float)
     parser.add_argument("--relative_union_area", help="Optional. IoU relative union area", default=0.4, type=float)
+    parser.add_argument("--finalize_iou_boxes", help="", default=False, type=bool)
     parser.add_argument("-t", "--prob_threshold", help="Optional. Probability threshold for detections filtering",
             default=0.5, type=float)
     
@@ -104,34 +105,39 @@ def calculate_threshold(frame, result, args, width, height):
     r = (result.flatten() > args.threshold).astype(bool)
     return np.sum(r)
 
-def finalize_draw_boxes(boxes, frame, args):
-    iou = []
-    for ii, box_1 in enumerate(boxes):
-        for box_2 in boxes[ii+1:]:
-            _ratio, _num, _denom = intersection_over_union(
-                dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_1)), 
-                dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_2)))
-            iou.append([_ratio, _num, _denom])
-    iou = np.array(iou)
-    iou[:,1] /= iou[:,1].max()
-    iou[:,2] /= iou[:,2].max()
-    idx = np.where((iou[:,0] >= args.iou_threshold) & (iou[:,1] <= args.relative_overlap_area) \
-        & (iou[:,2] <= args.relative_union_area))[0]
-    idx = np.floor(1 + np.sqrt(1+idx*2*4)) / 2
-    idx = np.unique(idx).astype(np.int32)
-    print(idx)
+def finalize_draw_boxes(boxes, frame, args, colors):
+    idx = list(range(len(boxes)))
+    if args.finalize_iou_boxes:
+        iou = []
+        for ii, box_1 in enumerate(boxes):
+            for box_2 in boxes[ii+1:]:
+                _ratio, _num, _denom = intersection_over_union(
+                    dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_1)), 
+                    dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_2)))
+                iou.append([_ratio, _num, _denom])
+        iou = np.array(iou)
+        iou[:,1] /= iou[:,1].max()
+        iou[:,2] /= iou[:,2].max()
+        idx = np.where((iou[:,0] >= args.iou_threshold) & (iou[:,1] <= args.relative_overlap_area) \
+            & (iou[:,2] <= args.relative_union_area))[0]
+        idx = np.floor(1 + np.sqrt(1+idx*2*4)) / 2
+        idx = np.unique(idx).astype(np.int32)
     boxes = np.array(boxes)
-    for box in boxes[idx]:
+    colors = np.array(colors)
+    colors = colors[idx]
+    for i, box in enumerate(boxes[idx]):
         xmin, ymin, xmax, ymax = box
-        cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), args.c, args.th)
+        cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), tuple(colors[i].tolist()), args.th)
 
     return frame
 
 def draw_boxes(frame, result, args, width, height):
     confs = []
     boxes = []
+    colors = []
     for box in result[0][0]:
         conf = box[2]
+        label = box[1]
         if conf >= args.pt:
             xmin = int(box[3] * width)
             ymin = int(box[4] * height)
@@ -139,8 +145,10 @@ def draw_boxes(frame, result, args, width, height):
             ymax = int(box[6] * height)
             confs.append(conf)
             boxes.append((xmin, ymin, xmax, ymax))
+            label = label * np.array([127,127,127]) * np.array([0.4,0.2,0.8])
+            colors.append(tuple((label / label.max() * np.array([255,255,255])).astype(np.int32).tolist()))
             
-    return frame, confs, boxes
+    return frame, confs, boxes, colors
 
 def infer_on_batch_result(infer_network, frames, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
@@ -165,8 +173,8 @@ conf=False, threshold=False, aspect=False):
             frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
             infer_network.get_input_shape()[1], infer_network.get_input_shape()[0], frame, args)
         else:
-            frame, confs, boxes = draw_boxes(frame, results[ii,:,:,:], args, width, height)
-            frame = finalize_draw_boxes(boxes, frame, args)
+            frame, confs, boxes, colors = draw_boxes(frame, results[ii,:,:,:], args, width, height)
+            frame = finalize_draw_boxes(boxes, frame, args, colors)
         frames[ii] = frame
         confidences = np.append(confidences, confs).tolist()
     
@@ -198,9 +206,9 @@ conf=False, threshold=False, aspect=False):
             frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
             infer_network.get_input_shape()[1], infer_network.get_input_shape()[0], frame, args)
         else:
-            frame, confs, boxes = draw_boxes(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
+            frame, confs, boxes, colors = draw_boxes(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
         args, width, height)
-            frame = finalize_draw_boxes(boxes, frame, args)
+            frame = finalize_draw_boxes(boxes, frame, args, colors)
         frames[ii] = frame
         confidences = np.append(confidences, confs).tolist()
     
@@ -231,8 +239,8 @@ conf=False, threshold=False, aspect=False):
         frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
         infer_network.get_input_shape()[3], infer_network.get_input_shape()[2], frame, args)
     else:
-        frame, confs, boxes = draw_boxes(frame, results, args, width, height)
-        frame = finalize_draw_boxes(boxes, frame, args)
+        frame, confs, boxes, colors = draw_boxes(frame, results, args, width, height)
+        frame = finalize_draw_boxes(boxes, frame, args, colors)
         confidences = np.append(confidences, confs).tolist()
     
     return frame, thrs, confidences
