@@ -10,7 +10,7 @@ A **Supply Chain Manager** takes control of the yard for delivering cargos at th
 
 A Cargo undergoes lifecycle stages from: Picking up from Ships and loading into the Yard, then drop-off the cargo containers at the Interchange and finally delivering the cargo via a routed shipment mode. 
 
-![https://github.com/nscalo/congestion-cargo-yards/raw/main/videos/recording-10.gif](https://github.com/nscalo/congestion-cargo-yards/raw/main/videos/recording-10.gif)
+![https://github.com/nscalo/congestion-cargo-yards/raw/develop/videos/recording-10.gif](https://github.com/nscalo/congestion-cargo-yards/raw/develop/videos/recording-10.gif)
 
 ## PROJECT ELICITATION STAGE
 
