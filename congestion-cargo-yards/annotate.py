@@ -69,7 +69,7 @@ def build_argparser():
     parser.add_argument("-c", help=color_desc, type=tuple, default=(0,255,0))
     parser.add_argument("-th", help=thickness_desc, type=int, default=2)
     parser.add_argument("-bt", "--batch_size", help=batch_size_desc, type=int, default=16)
-    parser.add_argument("-mode", "--mode", help=mode_desc, type=str, default='async')
+    parser.add_argument("-mode", "--mode", help=mode_desc, type=str, default='sync_async')
     parser.add_argument("-out", "--output_log", help=mode_desc, type=str, default='main.log')
     parser.add_argument("-o", "--output_video", help=mode_desc, type=str, default="output_video.avi")
     parser.add_argument("-thr", "--threshold", help=mode_desc, type=float, default=0.4)
@@ -85,6 +85,8 @@ def build_argparser():
     parser.add_argument("--relative_overlap_area", help="Optional. IoU relative overlap area", default=0.4, type=float)
     parser.add_argument("--relative_union_area", help="Optional. IoU relative union area", default=0.4, type=float)
     parser.add_argument("--finalize_iou_boxes", help="", default=False, type=bool)
+    parser.add_argument("--max_iou", help="", default=0.6, type=float)
+    parser.add_argument("--max_objects", help="", default=50, type=int)
     parser.add_argument("-t", "--prob_threshold", help="Optional. Probability threshold for detections filtering",
             default=0.5, type=float)
     
@@ -134,7 +136,7 @@ def finalize_draw_boxes(boxes, frame, args, colors):
 
     return frame
 
-def draw_boxes(frame, result, args, width, height):
+def draw_boxes(frame, result, args, width, height, ann_boxes, counter):
     confs = []
     boxes = []
     colors = []
@@ -142,19 +144,17 @@ def draw_boxes(frame, result, args, width, height):
         conf = box[2]
         label = box[1]
         if conf >= args.pt:
+            ann_boxes["frame_"+str(counter)]['rois'] += [box] #save rois
             xmin = int(box[3] * width)
             ymin = int(box[4] * height)
             xmax = int(box[5] * width)
             ymax = int(box[6] * height)
             confs.append(conf)
             boxes.append((xmin, ymin, xmax, ymax))
-            if label == 1.0:
-                label = np.array([25,210,157])
-            else:
-                label = np.array([231,165,56])
-            colors.append(tuple(label.tolist()))
+            label = label * np.array([127,127,127]) * np.array([0,1,0])
+            colors.append(tuple((label / 2.5 * np.array([255,255,255])).astype(np.int32).tolist()))
             
-    return frame, confs, boxes, colors
+    return frame, confs, boxes, colors, ann_boxes
 
 def infer_on_batch_result(infer_network, frames, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
@@ -179,14 +179,15 @@ conf=False, threshold=False, aspect=False):
             frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
             infer_network.get_input_shape()[1], infer_network.get_input_shape()[0], frame, args)
         else:
-            frame, confs, boxes, colors = draw_boxes(frame, results[ii,:,:,:], args, width, height)
+            frame, confs, boxes, colors, ann_boxes = draw_boxes(frame, results[ii,:,:,:], args, width, height, 
+            ann_boxes, counter)
             frame = finalize_draw_boxes(boxes, frame, args, colors)
         frames[ii] = frame
         confidences = np.append(confidences, confs).tolist()
     
     # Write out the frame
     
-    return frames, thrs, confidences
+    return frames, thrs, confidences, ann_boxes
 
 def infer_on_multi_result(infer_network, frames, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
@@ -212,7 +213,7 @@ conf=False, threshold=False, aspect=False):
             frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
             infer_network.get_input_shape()[1], infer_network.get_input_shape()[0], frame, args)
         else:
-            frame, confs, boxes, colors = draw_boxes(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
+            frame, confs, boxes, colors, ann_boxes = draw_boxes(frame, results[:,:,output_shape*ii:output_shape*ii+output_shape,:], 
         args, width, height)
             frame = finalize_draw_boxes(boxes, frame, args, colors)
         frames[ii] = frame
@@ -220,7 +221,7 @@ conf=False, threshold=False, aspect=False):
     
     # Write out the frame
     
-    return frames, thrs, confidences
+    return frames, thrs, confidences, ann_boxes
 
 def infer_on_result(infer_network, frame, args, width, height, request_id=0, 
 conf=False, threshold=False, aspect=False):
@@ -245,11 +246,11 @@ conf=False, threshold=False, aspect=False):
         frame, confs = draw_yolo_bounding_boxes(results, infer_network.network, 
         infer_network.get_input_shape()[3], infer_network.get_input_shape()[2], frame, args)
     else:
-        frame, confs, boxes, colors = draw_boxes(frame, results, args, width, height)
+        frame, confs, boxes, colors, ann_boxes = draw_boxes(frame, results, args, width, height)
         frame = finalize_draw_boxes(boxes, frame, args, colors)
         confidences = np.append(confidences, confs).tolist()
     
-    return frame, thrs, confidences
+    return frame, thrs, confidences, ann_boxes
 
 def sync_async(infer_network, p_frames, t='sync', request_id=20):
     if t == "async":
@@ -268,12 +269,32 @@ def infer_on_stream(args, client=None):
     :return: None
     """
     
+    """
+    Cap attributes
+    """
     videos = args.vds.split(",")
     caps = []
     widths = []
     heights = []
     outs = []
 
+    """
+    Annotation Attributes
+    """
+
+    temp_queue = list(range(1,args.max_objects))
+
+    frame_count_to_be_permanent = 5
+    count_to_vanish = 10
+
+    temp_ids = {}
+    permanent_ids = {}
+    previous_temp_ids = {}
+
+    current = -1
+    previous = -1
+
+    # capture multiple videos
     for video in videos:
         c = cv2.VideoCapture(video)
         c.open(video)
@@ -357,6 +378,9 @@ def infer_on_stream(args, client=None):
 
             if (counter) % args.batch_size == 0:
 
+                ann_boxes = {}
+                ann_boxes["frame_"+str(counter)] = {'rois':[]}
+
                 start_time = time.time()
                 
                 ### TODO: Pre-process the image as needed ###
@@ -410,6 +434,11 @@ def infer_on_stream(args, client=None):
                     threshold=args.is_threshold, aspect=args.aspect)
 
                 end_time = time.time()
+
+                """
+                ROI Check
+                """
+                check_roi(ann_boxes)
                 
                 logging.info("""Thresholds count: {t}""".format(t=(np.mean(thrs))))
                 logging.info("""Frame extract time: {t}""".format(t=(end_time - start_time)))
