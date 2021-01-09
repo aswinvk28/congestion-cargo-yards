@@ -35,7 +35,7 @@ A Cargo undergoes lifecycle stages from: Picking up from Ships and loading into 
 **Annotation of Video using Vehicles In Traffic**
 -------------------------------------------------
 
-[./annotation/create_id_for_vehicle.ipynb](./annotation/create_id_for_vehicle.ipynb)
+[https://github.com/nscalo/congestion-cargo-yards/blob/develop/congestion-cargo-yards/annotation/create_id_for_vehicle.ipynb](https://github.com/nscalo/congestion-cargo-yards/blob/develop/congestion-cargo-yards/annotation/create_id_for_vehicle.ipynb)
 
 ![./videos/traffic-bounding-box-annotate.gif](./videos/traffic-bounding-box-annotate.gif)
 
