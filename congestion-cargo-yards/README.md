@@ -10,7 +10,9 @@ Try Model "Person-Vehicle-Bike":
 
 ```bash
 
-root@docker-box:/opt/intel/openvino/deployment_tools/tools/model_downloader# python3 downloader.py --name "person-vehicle-bike-detection-crossroad-0078" --output_dir /home/project/models
+root@docker-box:/opt/intel/openvino/deployment_tools/tools/model_downloader# python3 downloader.py \
+--name "person-vehicle-bike-detection-crossroad-0078" \
+--output_dir /home/project/models
 
 ```
 
@@ -45,7 +47,8 @@ root@docker-box:/home/project/toolkit# python3 tensorboard.py
 ```bash
 
 root@37f902f9e5aa/home/project# pip3 install netron
-root@37f902f9e5aa:/home/project/toolkit/ssd_mobilenet_v1_coco_2017_11_17# netron -b frozen_inference_graph.pb --host 0.0.0.0 --port 8080
+root@37f902f9e5aa:/home/project/toolkit/ssd_mobilenet_v1_coco_2017_11_17# netron -b frozen_inference_graph.pb \
+--host 0.0.0.0 --port 8080
 Serving 'frozen_inference_graph.pb' at http://0.0.0.0:8080
 
 ```
@@ -60,7 +63,12 @@ git checkout a94aa5dfb184d83523a74caee54f478a66a2e487 -b test_branch
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/automated-queue.png" -d CPU -bt 1 --batch_size 1 -pt 0.11 --relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1 --finalize_iou_boxes 1
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py \
+-m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml \
+-vds "/home/project/images/automated-queue.png" \
+-d CPU -bt 1 --batch_size 1 -pt 0.11 \
+--relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1 \
+--finalize_iou_boxes 1
 
 ```
 
@@ -79,7 +87,12 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/cargo-inside-forklift.png" -d CPU -bt 1 --batch_size 1 -pt 0.3 --relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1 --finalize_iou_boxes 1
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py \
+-m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml \
+-vds "/home/project/images/cargo-inside-forklift.png" \
+-d CPU -bt 1 --batch_size 1 -pt 0.3 \
+--relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1 \
+--finalize_iou_boxes 1
 
 ```
 
@@ -87,7 +100,10 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/forklift-back.png" -d CPU -bt 1 --batch_size 1 -pt 0.4
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py \
+-m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml \
+-vds "/home/project/images/forklift-back.png" \
+-d CPU -bt 1 --batch_size 1 -pt 0.4
 
 ```
 
@@ -95,7 +111,10 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/forklift-carry-weight.png" -d CPU -bt 1 --batch_size 1 -pt 0.25
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py \
+-m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml \
+-vds "/home/project/images/forklift-carry-weight.png" \
+-d CPU -bt 1 --batch_size 1 -pt 0.25
 
 ```
 
@@ -103,7 +122,10 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/forklift-stationary-cog-drill.png" -d CPU -bt 1 --batch_size 1 -pt 0.2
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py \
+-m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml \
+-vds "/home/project/images/forklift-stationary-cog-drill.png" \
+-d CPU -bt 1 --batch_size 1 -pt 0.2
 
 ```
 
@@ -111,7 +133,12 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ```bash
 
-root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml -vds "/home/project/images/forklift-top.png" -d CPU -bt 1 --batch_size 1 -pt 0.25 --relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1 --finalize_iou_boxes 1
+root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py \
+-m /home/project/models/intel/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml \
+-vds "/home/project/images/forklift-top.png" \
+-d CPU -bt 1 --batch_size 1 -pt 0.25 \
+ --relative_overlap_area 1.0 --relative_union_area 1.0 --iou_threshold 0.1 \
+ --finalize_iou_boxes 1
 
 ```
 
@@ -121,3 +148,13 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ## Convert TF Model to OpenVINO
 
+
+
+Project Maintainers
+-------------------
+
+Aswin Vijayakumar       [@nscalo](https://github.com/nscalo)
+
+Rutvik Chauhan          [@Rutvik21](https://github.com/Rutvik21)
+
+Divya Chhibber          [@divyavit](https://github.com/divyavit)

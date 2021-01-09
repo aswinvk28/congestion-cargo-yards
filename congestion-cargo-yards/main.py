@@ -106,6 +106,7 @@ def calculate_threshold(frame, result, args, width, height):
     return np.sum(r)
 
 def finalize_draw_boxes(boxes, frame, args, colors):
+    # index from range of list
     idx = list(range(len(boxes)))
     if args.finalize_iou_boxes:
         iou = []
@@ -116,12 +117,14 @@ def finalize_draw_boxes(boxes, frame, args, colors):
                     dict(zip(['xmin', 'ymin', 'xmax', 'ymax'], box_2)))
                 iou.append([_ratio, _num, _denom])
         iou = np.array(iou)
-        iou[:,1] /= iou[:,1].max()
-        iou[:,2] /= iou[:,2].max()
-        idx = np.where((iou[:,0] >= args.iou_threshold) & (iou[:,1] <= args.relative_overlap_area) \
-            & (iou[:,2] <= args.relative_union_area))[0]
-        idx = np.floor(1 + np.sqrt(1+idx*2*4)) / 2
-        idx = np.unique(idx).astype(np.int32)
+        # check for iou boxes length
+        if len(iou) > 0:
+            iou[:,1] /= iou[:,1].max()
+            iou[:,2] /= iou[:,2].max()
+            idx = np.where((iou[:,0] >= args.iou_threshold) & (iou[:,1] <= args.relative_overlap_area) \
+                & (iou[:,2] <= args.relative_union_area))[0]
+            idx = np.floor(1 + np.sqrt(1+idx*2*4)) / 2
+            idx = np.unique(idx).astype(np.int32)
     boxes = np.array(boxes)
     colors = np.array(colors)
     colors = colors[idx]
@@ -145,8 +148,11 @@ def draw_boxes(frame, result, args, width, height):
             ymax = int(box[6] * height)
             confs.append(conf)
             boxes.append((xmin, ymin, xmax, ymax))
-            label = label * np.array([127,127,127]) * np.array([0.4,0.2,0.8])
-            colors.append(tuple((label / label.max() * np.array([255,255,255])).astype(np.int32).tolist()))
+            if label == 1.0:
+                label = np.array([25,210,157])
+            else:
+                label = np.array([231,165,56])
+            colors.append(tuple(label.tolist()))
             
     return frame, confs, boxes, colors
 
@@ -305,8 +311,8 @@ def infer_on_stream(args, client=None):
 
         frames = []
         
-        # if (num_index != 1):
-        #     out = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*'MJPG'), 30, (width,height))
+        if ("mp4" in args.vds or "avi" in args.vds):
+            out = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*'MJPG'), 30, (width,height))
 
         def call_infer_network(infer_network, frame, args, width, height, request_id, conf=False, threshold=False, aspect=False):
             if infer_network.wait(request_id=request_id) == 0:
@@ -425,8 +431,8 @@ def infer_on_stream(args, client=None):
 
             counter += 1
             
-        # if args.output_video:
-        #     out.release()
+        if ("mp4" in args.vds or "avi" in args.vds):
+            out.release()
         
         cap.release()
 
@@ -434,7 +440,7 @@ def infer_on_stream(args, client=None):
     for num_index, cap in enumerate(caps):
         t = threading.Thread(target=call_each_video_capture, 
         args=(args, cap, num_index, widths[num_index], heights[num_index], 
-        str(videos[num_index][::-1][3:][::-1]) + str(num_index) + ".png", str(videos[num_index][::-1][3:][::-1]) + str(num_index) + "_.npy"))
+        str(videos[num_index][::-1][3:][::-1]) + str(num_index) + ".avi", str(videos[num_index][::-1][3:][::-1]) + str(num_index) + "_.npy"))
         threads.append(t)
         t.start()
 
