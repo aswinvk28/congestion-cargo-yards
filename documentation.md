@@ -32,4 +32,13 @@ A person behind the CCTV camera is monitoring in a dashboard like environment. A
 
 Join the videos into a story
 
-# 
+
+
+Project Maintainers
+-------------------
+
+Aswin Vijayakumar       [@nscalo](https://github.com/nscalo)
+
+Rutvik Chauhan          [@Rutvik21](https://github.com/Rutvik21)
+
+Divya Chhibber          [@divyavit](https://github.com/divyavit)

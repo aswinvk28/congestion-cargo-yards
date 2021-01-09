@@ -121,3 +121,13 @@ root@37f902f9e5aa:/home/project/congestion-cargo-yards# python3 main.py -m /home
 
 ## Convert TF Model to OpenVINO
 
+
+
+Project Maintainers
+-------------------
+
+Aswin Vijayakumar       [@nscalo](https://github.com/nscalo)
+
+Rutvik Chauhan          [@Rutvik21](https://github.com/Rutvik21)
+
+Divya Chhibber          [@divyavit](https://github.com/divyavit)
