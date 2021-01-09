@@ -48,14 +48,12 @@ _The time taken is Operational Metadata that tracks individually the forklift wi
 
 ![./videos/traffic-bounding-box-annotate.gif](./videos/traffic-bounding-box-annotate.gif)
 
-Monitoring Environment
-----------------------
+**Monitoring Environment**
+--------------------------
 
-**We use Image Segmentation and Optical Flow Tracking for tracking containers within the Cargo**
+**We use Image Segmentation for tracking containers within the Yard**
 
-Please refer to:
-
-[https://github.com/aswinvk28/optical-flow-analysis](https://github.com/aswinvk28/optical-flow-analysis)
+![./images/video-1-frame.PNG](./images/video-1-frame.PNG)
 
 **We have created a simulation dashboard where**
 
