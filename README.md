@@ -53,7 +53,7 @@ _The time taken is Operational Metadata that tracks individually the forklift wi
 
 **We use Image Segmentation for tracking containers within the Yard**
 
-![./images/video-1-frame.PNG](./images/video-1-frame.PNG)
+![./images/video-1-frame.png](./images/video-1-frame.png)
 
 **We have created a simulation dashboard where**
 
