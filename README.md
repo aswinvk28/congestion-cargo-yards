@@ -48,9 +48,24 @@ _The time taken is Operational Metadata that tracks individually the forklift wi
 
 ![./videos/traffic-bounding-box-annotate.gif](./videos/traffic-bounding-box-annotate.gif)
 
-### Monitoring Environment
+**Monitoring Environment**
+--------------------------
 
+**We use Image Segmentation for tracking containers within the Yard**
 
+![./images/video-1-frame.PNG](./images/video-1-frame.PNG)
+
+**We have created a simulation dashboard where**
+
+- Number of cargos in the Interchange
+
+- Relative Time spent by Forklifts and Heavylifts for pickup and drop-off of cargos
+
+- These indicate the video inference from OpenVINO can be pushed to Grafana Server where the Yard Manager and Supply Chain Manager can make decisions. 
+
+- IoT data on RFID Stickers are also used to track each cargo container thereby increasing the efficiency
+
+![./images/sample-dashboard-cargos.PNG](./images/sample-dashboard-cargos.PNG)
 
 Project Maintainers
 -------------------
