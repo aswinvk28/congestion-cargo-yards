@@ -23,7 +23,7 @@ A Cargo undergoes lifecycle stages from: Picking up from Ships and loading into 
 **Cargo Queue Management at the Interchange**
 ---------------------------------------------
 
-_The Interchange shows Technical Metadata at the end of the Cargo lifecycle_
+_The Interchange records Technical Metadata of vehicles going out at the end of the Cargo lifecycle_
 
 [https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-0-1-full.gif](https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-0-1-full.gif)
 
@@ -32,7 +32,7 @@ _The Interchange shows Technical Metadata at the end of the Cargo lifecycle_
 **Measuring the Time Taken**
 ----------------------------
 
-_The time taken is Operational Metadata that tracks individually the forklift within the surveillance video_
+_The time taken is Operational Metadata that tracks individually the forklift using vehicle installed devices_
 
 [https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-2-3-middle-part.gif](https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-2-3-middle-part.gif)
 
@@ -51,7 +51,7 @@ _The time taken is Operational Metadata that tracks individually the forklift wi
 **Monitoring Environment**
 --------------------------
 
-**We use Image Segmentation for tracking containers within the Yard**
+**We use Image Segmentation to track containers within the Yard**
 
 ![./images/video-1-frame.png](./images/video-1-frame.png)
 
@@ -67,12 +67,12 @@ _The time taken is Operational Metadata that tracks individually the forklift wi
 
 ![./images/sample-dashboard-cargos.PNG](./images/sample-dashboard-cargos.PNG)
 
-Project Maintainers
--------------------
+**Project Maintainers**
+-----------------------
 
-Aswin Vijayakumar       [@nscalo](https://github.com/nscalo)
+Aswin Vijayakumar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [@nscalo](https://github.com/nscalo)
 
-Rutvik Chauhan          [@Rutvik21](https://github.com/Rutvik21)
+Rutvik Chauhan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [@Rutvik21](https://github.com/Rutvik21)
 
-Divya Chhibber          [@divyavit](https://github.com/divyavit)
+Divya Chhibber &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [@divyavit](https://github.com/divyavit)
 
