@@ -40,6 +40,10 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 
 ![./images/video-2-3-poster-end.png](./images/video-2-3-poster-end.png)
 
+![./images/cargo-pickup-detected.png](./images/cargo-pickup-detected.png)
+
+![./images/cargo-dropoff-detected.png](./images/cargo-dropoff-detected.png)
+
 ### Annotation of Video using Vehicles In Traffic
 
 **How you describe your Traffic Congestion within the yard has been explained here. With this video one can achieve annotation to a greater degree of accuracy with very less model complexity.**
@@ -52,6 +56,8 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 --------------------------
 
 **We use Image Segmentation to track containers within the Yard**
+
+![./images/ship-stacking-containers.png](./images/ship-stacking-containers.png)
 
 ![./images/video-1-frame.png](./images/video-1-frame.png)
 
