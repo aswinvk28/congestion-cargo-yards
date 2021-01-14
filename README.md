@@ -55,9 +55,11 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 **Monitoring Environment**
 --------------------------
 
-**We use Image Segmentation to track containers within the Yard**
+**We use Image Segmentation and Contour Detection to track containers within the Yard**
 
 ![./images/ship-stacking-containers.png](./images/ship-stacking-containers.png)
+
+![./images/cargo-containers.png](./images/cargo-containers.png)
 
 ![./images/video-1-frame.png](./images/video-1-frame.png)
 
