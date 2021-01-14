@@ -61,8 +61,6 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 
 ![./images/ship-stacking-containers.png](./images/ship-stacking-containers.png)
 
-![./images/cargo-containers.png](./images/cargo-containers.png)
-
 ![./images/video-1-frame.png](./images/video-1-frame.png)
 
 **We have created a simulation dashboard where**
