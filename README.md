@@ -25,6 +25,8 @@ A Cargo undergoes lifecycle stages from: Picking up from Ships and loading into 
 
 _The Interchange records Technical Metadata of vehicles going out at the end of the Cargo lifecycle_
 
+_Please watch the video that shows demo of the camera installed in the yard in action. En-route of the cargo from the shipping area to the interchange the cameras in teh yard monitor the containers continuously. This makes the installation of RFID Readers feasible at the forklift or cargo container shelves._
+
 [https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-0-1-full.gif](https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-0-1-full.gif)
 
 ![./images/video-0-1-poster.png](./images/video-0-1-poster.png)
