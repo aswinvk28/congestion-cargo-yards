@@ -78,6 +78,8 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 **Project Maintainers**
 -----------------------
 
+![./profile/team-profile.jpeg](./profile/team-profile.jpeg)
+
 Aswin Vijayakumar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [@nscalo](https://github.com/nscalo)
 
 Rutvik Chauhan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [@Rutvik21](https://github.com/Rutvik21)
