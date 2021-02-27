@@ -37,8 +37,8 @@ Then I found the device needs updating / its platform
 
 ![img1.png](img1.png)
 
-![./inference_outputs/img2.png](./inference_outputs/img2.png)
+![img2.png](img2.png)
 
-![./inference_outputs/img3.png](./inference_outputs/img3.png)
+![img3.png](img3.png)
 
-![./inference_outputs/img4.png](./inference_outputs/img4.png)
+![img4.png](img4.png)
