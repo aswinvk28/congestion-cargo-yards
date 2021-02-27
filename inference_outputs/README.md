@@ -35,7 +35,7 @@ Then I found the device needs updating / its platform
 
 ### Some output images of inference
 
-![./inference_outputs/img1.png](./inference_outputs/img1.png)
+![img1.png](img1.png)
 
 ![./inference_outputs/img2.png](./inference_outputs/img2.png)
 
