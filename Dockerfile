@@ -16,6 +16,9 @@ RUN pip3 install paho-mqtt
 RUN pip3 install tensorflow_constrained_optimization
 RUN git config --global user.email "aswinkvj@gmail.com"
 RUN git config --global user.name "Aswin Vijayakumar"
+
+RUN pip3 install rtsp
+
 WORKDIR /home/project
 
 ENTRYPOINT "/bin/bash"
