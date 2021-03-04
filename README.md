@@ -25,6 +25,8 @@ A Cargo undergoes lifecycle stages from: Picking up from Ships and loading into 
 
 _The Interchange records Technical Metadata of vehicles going out at the end of the Cargo lifecycle_
 
+_Please watch the video that shows demo of the camera installed in the yard in action. En-route of the cargo from the shipping area to the interchange the cameras in teh yard monitor the containers continuously. This makes the installation of RFID Readers feasible at the forklift or cargo container shelves._
+
 [https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-0-1-full.gif](https://journal-ai-php-logs.s3.eu-west-2.amazonaws.com/video-0-1-full.gif)
 
 ![./images/video-0-1-poster.png](./images/video-0-1-poster.png)
@@ -55,7 +57,7 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 **Monitoring Environment**
 --------------------------
 
-**We use Image Segmentation to track containers within the Yard**
+**We use Image Segmentation and Contour Detection to track containers within the Yard**
 
 ![./images/ship-stacking-containers.png](./images/ship-stacking-containers.png)
 
@@ -75,6 +77,8 @@ _The time taken is Operational Metadata that tracks individually the forklift us
 
 **Project Maintainers**
 -----------------------
+
+![./profile/team-profile.jpeg](./profile/team-profile.jpeg)
 
 Aswin Vijayakumar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [@nscalo](https://github.com/nscalo)
 
